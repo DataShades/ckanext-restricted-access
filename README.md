@@ -20,15 +20,26 @@ The `harvest_source_list` API action in `ckanext-harvest` exposes the full confi
 
 This is a security risk for us - therefore we want to restrict the `harvest_source_list` API action to `sysadmin` authenticated users.
 
- ## Configuration
- 
-Added the `restricted_access` plugin to your CKAN `.ini` file, e.g.
- 
+## Configuration
+
+Add the `restricted_access` plugin to your CKAN `.ini` file, e.g.
+
     ckan.plugins = ... restricted_access ...
 
-Add two new settings to your CKAN `.ini` file:
+### Config options
+There are few config options you could use to manage the restrictions of paths and endpoints:
+```
+# A list of API endpoints to restrict. Use * to restrict all endpoints that starts from X
+# (optional, default: None)
+ckan.restricted.api_actions = harvest_* user_autocomplete status_show
 
-    ckan.restricted.api_actions = harvest_source_list user_autocomplete status_show
-    ckan.restricted.ui_actions = /user
+# A list of paths to restrict. Use a regular expression here, to manage more complex rules
+# (optional, default: None)
+ckan.restricted.ui_paths = ^/user/default$ (?!.*login)/user/*
 
-Both are a space separated list of API actions and UI actions that will be restricted to `sysadmin` level users.
+# Redirect anonymous users to login page
+# (optional, default: false)
+ckan.restricted.redirect_anon_to_login = true
+```
+Only sysadmins could visit the restricted endpoints.
+You could provide `api_token` of a sysadmin and get an access.
