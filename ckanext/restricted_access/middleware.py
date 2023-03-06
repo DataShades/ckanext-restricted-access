@@ -26,7 +26,7 @@ def get_api_action(environ):
     if paths and 'api' in paths and 'action' in paths:
         # action should always be the last path
         api_action = paths[len(paths)-1]
-        
+
     return api_action
 
 
@@ -62,6 +62,9 @@ def check_access_api_action(api_user, api_action):
 
 
 class AuthMiddleware(object):
+    def __getattr__(self, key):
+        return getattr(self.app, key)
+
     def __init__(self, app, app_conf):
         self.app = app
 
