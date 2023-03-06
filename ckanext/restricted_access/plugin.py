@@ -6,4 +6,5 @@ class RestrictedAccessPlugin(plugins.SingletonPlugin):
     plugins.implements(plugins.IMiddleware, inherit=True)
 
     def make_middleware(self, app, config):
-        return middleware.AuthMiddleware(app, config)
+        middleware.AuthMiddleware.init_app(app)
+        return app
