@@ -7,6 +7,7 @@ from flask import jsonify, Response
 
 import ckan.authz as authz
 import ckan.plugins.toolkit as tk
+import ckan.model as model
 
 import ckanext.restricted_access.config as conf
 import ckanext.restricted_access.const as const
@@ -15,22 +16,13 @@ import ckanext.restricted_access.const as const
 log = logging.getLogger(__name__)
 
 
-class RestrictAccessMiddleware(object):
-    def __init__(self, app):
-        self.app = app
-        app.before_request(before_request)
-
-    def __call__(self, environ, start_response):
-        return self.app(environ, start_response)
-
-
 def before_request():
     if tk.request.endpoint in const.NON_RESTRICTABLE_ENDPOINTS:
         return
 
     if (
         conf.get_redirect_anon_to_login()
-        and not tk.g.user
+        and not tk.current_user.is_authenticated
         and tk.request.endpoint != const.LOGIN_ENDPOINT
     ):
         return tk.redirect_to(const.LOGIN_ENDPOINT)
@@ -54,11 +46,13 @@ def check_access_by_path() -> bool:
         bool: False if access is restricted, otherwise True
     """
 
+    user: model.User | model.AnonymousUser = tk.current_user
+
     for path_regex in conf.get_restricted_paths():
         if not re.match(path_regex, tk.request.path):
             continue
 
-        if not tk.g.user or not authz.is_sysadmin(tk.g.user):
+        if not user.is_authenticated or not authz.is_sysadmin(tk.g.user):
             log.info(
                 f"An attempt to access a restricted path '{tk.request.path}'. "
                 f"User: {tk.g.user or 'anonymous'}"
@@ -74,7 +68,7 @@ def check_access_by_api_action() -> bool:
     Returns:
         bool: False if access is restricted, otherwise True
     """
-    args: dict[str, str] = tk.request.view_args
+    args: dict[str, str] = tk.request.view_args or {}
     request_action: str | None = args.get("api_action") or args.get("logic_function")
 
     if not request_action:
