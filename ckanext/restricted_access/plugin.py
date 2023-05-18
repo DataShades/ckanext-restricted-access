@@ -1,5 +1,5 @@
 import ckan.plugins as plugins
-import ckanext.restricted_access.middleware as middleware
+from ckanext.restricted_access.middleware import before_request
 
 
 class RestrictedAccessPlugin(plugins.SingletonPlugin):
@@ -8,4 +8,6 @@ class RestrictedAccessPlugin(plugins.SingletonPlugin):
     # IMiddleware
 
     def make_middleware(self, app, config):
-        return middleware.RestrictAccessMiddleware(app)
+        app.before_request(before_request)
+
+        return app

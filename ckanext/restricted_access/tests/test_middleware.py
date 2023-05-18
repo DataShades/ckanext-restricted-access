@@ -43,7 +43,7 @@ class _App:
         if user:
             payload["extra_environ"] = {"REMOTE_USER": user}
         elif token:
-            payload["extra_environ"] = {"Authorization": token["token"].decode()}
+            payload["extra_environ"] = {"Authorization": token["token"]}
 
         return self.app.get(**payload)  # type: ignore
 
