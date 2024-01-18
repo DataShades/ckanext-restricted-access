@@ -37,6 +37,10 @@ ckan.restricted.api_actions = harvest_* user_autocomplete status_show
 # (optional, default: None)
 ckan.restricted.ui_paths = ^/user/default$ (?!.*login)/user/*
 
+# An error code for the restricted paths. It also impacts on the error message content in case of trying to request the restricted path.
+# (optional, default: 404)
+ckan.restricted.ui_paths.error_code = 403
+
 # Redirect anonymous users to login page
 # (optional, default: false)
 ckan.restricted.redirect_anon_to_login = true
