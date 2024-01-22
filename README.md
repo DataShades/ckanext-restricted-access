@@ -41,9 +41,9 @@ ckan.restricted.ui_paths = ^/user/default$ (?!.*login)/user/*
 # (optional, default: 404)
 ckan.restricted.ui_paths.error_code = 403
 
-# An error message for the restricted paths. If this option is empty and the error code is not 404 the default messages for exceptions will be taken from CKAN core.
-# (optional, default: Not Found)
-ckan.restricted.ui_paths.error_code = Not authorized to see this page
+# An error message for the restricted paths.
+# (optional, default: a CKAN core message for the appropriate error code)
+ckan.restricted.ui_paths.error_message = Not authorized to see this page
 
 # Redirect anonymous users to login page
 # (optional, default: false)

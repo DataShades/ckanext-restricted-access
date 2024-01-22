@@ -14,8 +14,6 @@ import ckanext.restricted_access.const as const
 
 
 log = logging.getLogger(__name__)
-ERROR_CODE = conf.get_restricted_paths_error_code()
-ERROR_MESSAGE = conf.get_restricted_paths_error_message()
 
 
 def before_request():
@@ -34,9 +32,8 @@ def before_request():
 
     if not check_access_by_path():
         return tk.abort(
-            ERROR_CODE,
-            ERROR_MESSAGE or tk._(const.NOT_FOUND_MESSAGE)
-            if ERROR_CODE == 404 else ERROR_MESSAGE
+            conf.get_restricted_paths_error_code(),
+            conf.get_restricted_paths_error_message()
         )
 
 
