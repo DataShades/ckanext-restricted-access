@@ -31,7 +31,10 @@ def before_request():
         return invalid_request(), 400
 
     if not check_access_by_path():
-        return tk.abort(404, tk._(const.NOT_FOUND_MESSAGE))
+        return tk.abort(
+            conf.get_restricted_paths_error_code(),
+            conf.get_restricted_paths_error_message()
+        )
 
 
 def invalid_request() -> Response:
